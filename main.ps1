@@ -128,7 +128,8 @@ if ($IncludeExampleAudit) {
 if ($Mode -eq 'Full') {
     # Both are deliberately opt-in because they are NOT read-only operations.
     $tasks += New-RunTask -Name 'defender_update' -File 'defender_update.ps1'
-    $serviceArgs = if ($AutoDisableServices) { @('-AutoDisable') } else { @() }
+    $serviceArgs = @()
+    if ($AutoDisableServices) { $serviceArgs = @('-AutoDisable') }
     $tasks += New-RunTask -Name 'service_hardening' -File 'service_hardening.ps1' -Arguments $serviceArgs -Interactive (-not $AutoDisableServices)
 }
 
@@ -186,7 +187,9 @@ foreach ($task in $tasks) {
         $arguments += '-NonInteractive'
     }
     $arguments += @('-File', $scriptPath)
-    $arguments += @($task.Arguments)
+    if ($task.Arguments -and $task.Arguments.Count -gt 0) {
+        $arguments += $task.Arguments
+    }
 
     $exitCode = 1
     try {
