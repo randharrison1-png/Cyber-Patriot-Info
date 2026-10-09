@@ -1,5 +1,34 @@
 # Windows Security Scripts for CyberPatriot (PowerShell)
 
+## Run All Windows Audits from One Script
+
+Use [main.ps1](./main.ps1) as the launcher for the scripts in this directory. It runs the ten top-level read-only audits and writes separate logs and a CSV run summary to a timestamped folder under your Documents directory.
+
+From an elevated Windows PowerShell session in the repository folder:
+
+```powershell
+# Preview the list of scripts without running any:
+.\main.ps1 -Mode List
+
+# Run audits (default; no Windows security settings changed):
+.\main.ps1
+
+# Include the extra sample user audit and detailed firewall rules:
+.\main.ps1 -IncludeExampleAudit -ListFirewallRules
+
+# Explicitly permit a Defender signature update and INTERACTIVE service review:
+.\main.ps1 -Mode Full -AllowChanges
+
+# DANGEROUS: automatically disable the targeted services with no per-service prompt:
+.\main.ps1 -Mode Full -AllowChanges -AutoDisableServices
+```
+
+Full mode runs the two remaining top-level scripts: `defender_update.ps1` and `service_hardening.ps1`. The launcher intentionally **does not auto-run** the `Examples/` hardening examples or `Templates/` because they may change password, firewall, service, or antivirus settings that a competition image requires. Only the optional `Examples/Audit-LocalUsers.ps1` is supported as an additional read-only audit.
+
+**Check the current CyberPatriot competition rules and the image's README before running any script.** Test changes in an authorized practice VM. The report files can expose local users, services and network information; do not publish them. A successful script exit does not prove the system is secure.
+
+---
+
 This directory contains unique PowerShell scripts designed to aid in auditing and reconnaissance during CyberPatriot competitions. **These scripts prioritize information gathering and verification over making direct system changes.**
 
 **Disclaimer:** Always understand what a script does before running it, especially in a competition environment. Test scripts thoroughly in practice VMs. Use scripts to augment, not replace, manual investigation and understanding. **Prioritize actions based on the README, not just script output.**
